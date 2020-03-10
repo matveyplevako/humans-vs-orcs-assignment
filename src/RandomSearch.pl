@@ -22,7 +22,7 @@ random_search([[0, 0]|List], Moves, Touchdown, ThrowPoint) :-
     generate_map([Humans, Orcks, Touchdown]),
     random_search_round(200, [Humans, Orcks, Touchdown], List, Moves, ThrowPoint),
     (Moves \= 200 -> 
-    true;(write('No solution'), nl, true)).
+    true;(write('No solution'), nl, true)),
     draw_map(0, Humans, Orcks, Touchdown).
 
 
