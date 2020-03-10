@@ -1,17 +1,17 @@
-quantity(Quantity) :-  % generates random number in range 1 to 20
+quantity(Quantity) :-  % generates random number in range 5 to 20
 	random_between(5, 20, Quantity).
 
-quantity1(Quantity) :-  % generates random number in range 1 to 20
+quantity1(Quantity) :-  % generates random number in range 1 to 5
 	random_between(1, 5, Quantity).
 
 quantity2(Quantity) :-  % generates random number in range 1 to 20
-	random_between(10, 20, Quantity).
+	random_between(1, 20, Quantity).
 
 
 
 
 generate_map([Humans, Orcks, Touchdown]) :-
-	randseq(100, 100, Rand_Seq),
+	randseq(99, 99, Rand_Seq),
 	quantity(Human_Num),
     quantity2(Orck_Num),
     quantity1(Touchdown_Num),
@@ -20,13 +20,11 @@ generate_map([Humans, Orcks, Touchdown]) :-
 
 random_search([[0, 0]|List], Moves, Touchdown, ThrowPoint) :-
     generate_map([Humans, Orcks, Touchdown]),
-    random_search_round(1000, [Humans, Orcks, Touchdown], List, Moves, ThrowPoint),
+    random_search_round(200, [Humans, Orcks, Touchdown], List, Moves, ThrowPoint),
     (Moves \= 200 -> 
-    true;(write('No solution'), nl, true)),
+    true;(write('No solution'), nl, true)).
     draw_map(0, Humans, Orcks, Touchdown).
 
-
-random_search_round(0, _, [], 200, -1).
 
 random_search_round(Count, [Humans, Orcks, Touchdown], BestList, BestMoves, BestThrowPoint) :-
     Count > 0,
@@ -38,6 +36,7 @@ random_search_round(Count, [Humans, Orcks, Touchdown], BestList, BestMoves, Best
     ((BestMoves is PreviousMoves), (BestList = PreviousList), (BestThrowPoint = PreviousThrowPoint))).
 
 
+random_search_round(0, _, [], 200, -1).
 random_step([_, _, Touchdown], I, J, 0, [], 0, _, -1) :-
     is_in(Touchdown, [I, J]).
 
@@ -135,21 +134,23 @@ draw_point(Point, Humans, Orcks, Touchdown) :-
 
 
 
+split_seq3(_, 0, 0, 0, [[], [], []]). % terminal recursion case
 
-split_seq3(_, 0, 0, 0, [[], [], []]).
-
+% fill 1st list
 split_seq3([H|Seq], N1, N2, N3, [[Place|List1], List2, List3]) :-
     N1 \== 0,
     N1_1 is N1 - 1,
     get_X_Y(H, Place),
     split_seq3(Seq, N1_1, N2, N3, [List1, List2, List3]).
     
+% fill 2nd list
 split_seq3([H|Seq], N1, N2, N3, [List1, [Place|List2], List3]) :-
     N1 == 0, N2 \== 0,
     N2_1 is N2 - 1,
     get_X_Y(H, Place),
     split_seq3(Seq, N1, N2_1, N3, [List1, List2, List3]).
 
+% fill 3rd list
 split_seq3([H|Seq], N1, N2, N3, [List1, List2, [Place|List3]]) :-
     N1 == 0, N2 == 0, N3 \== 0,
     N3_1 is N3 - 1,
